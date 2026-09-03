@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --gov-navy: #003366;          /* Deep Navy Blue (Primary / Header) */
+    --gov-blue: #005A9C;          /* Government Blue (Secondary / Navbar) */
+    --gov-saffron: #FF9933;       /* India Saffron Accent / Buttons */
+    --gov-green: #138808;         /* India Green Accent */
+    --gov-bg: #F7F7F7;            /* Off White Background */
+    --gov-cards: #FFFFFF;         /* Pure White Cards */
+    --gov-text: #333333;          /* Main Text Dark Gray */
+    --gov-text-muted: #666666;    /* Secondary Text Gray */
+    --gov-border: #D9D9D9;        /* Light Gray Borders */
+    --gov-success: #198754;       /* Green Success */
+    --gov-warning: #F39C12;       /* Warning Saffron */
+    --gov-error: #B22222;         /* Government Red */
+  }
+
+  body {
+    background-color: #F7F7F7;
+    color: #333333;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Indian Government Official UI Card & Surface Styles */
+.glass-card {
+  background: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  box-shadow: 0 2px 8px rgba(0, 51, 102, 0.05);
+}
+
+.glass-card-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: #005A9C;
+  box-shadow: 0 8px 20px rgba(0, 51, 102, 0.1);
+}
+
+/* Tricolor Top Stripe */
+.tricolor-stripe {
+  height: 4px;
+  background: linear-gradient(to right, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%);
+}
+
+.tricolor-ribbon {
+  background: linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+}
+
+/* Government Blue Header / Nav Styles */
+.gov-header {
+  background-color: #003366;
+  color: #FFFFFF;
+}
+
+.gov-navbar {
+  background-color: #005A9C;
+  color: #FFFFFF;
+}
+
+/* Primary Button in Official India Saffron */
+.btn-saffron {
+  background-color: #FF9933;
+  color: #003366;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-saffron:hover {
+  background-color: #F39C12;
+  box-shadow: 0 4px 12px rgba(255, 153, 51, 0.35);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #F7F7F7;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9D9D9;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
