@@ -57,7 +57,7 @@ interface GovSyncContextType {
   setIsAuthModalOpen: (open: boolean) => void;
   authModalMode: 'LOGIN' | 'REGISTER';
   setAuthModalMode: (mode: 'LOGIN' | 'REGISTER') => void;
-  login: (method: AuthMethod, profile?: CitizenProfile) => Promise<void>;
+  login: (method: AuthMethod, payloadOrProfile?: any) => Promise<void>;
   register: (newProfile: CitizenProfile) => Promise<void>;
   logout: () => void;
 
@@ -109,30 +109,13 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     const saved = localStorage.getItem('govsync_is_authenticated');
-    return saved !== null ? JSON.parse(saved) : true;
+    return saved !== null ? JSON.parse(saved) : false;
   });
 
   const [authSession, setAuthSession] = useState<AuthSession | null>(() => {
     const saved = localStorage.getItem('govsync_auth_session');
     if (saved) return JSON.parse(saved);
-    return {
-      jwtToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJDSVQtSU4tMjAyNi05ODEyNCIsIm5hbWUiOiJBYXJhdnNoYXJtYSIsInJvbGUiOiJDSVRJWkVOIiwic2NvcGVzIjpbIlBST0ZJTEVfUkVBRCIsIkNPTlNFTlRfR1JBTlQiLCJTRVJWSUNFX0FQUExZIl19',
-      claims: {
-        sub: 'CIT-IN-2026-98124',
-        name: 'Aarav Sharma',
-        role: 'CITIZEN',
-        aadhaarMasked: 'XXXX-XXXX-4819',
-        email: 'aarav.sharma@govsync.demo',
-        phone: '+91 98765 43210',
-        scopes: ['PROFILE_READ', 'CONSENT_GRANT', 'SERVICE_APPLY', 'DIGILOCKER_SYNC'],
-        iss: 'https://auth.govsync.gov.in',
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 86400,
-        jti: 'jwt-sec-991824a'
-      },
-      authMethod: 'AADHAAR_OTP',
-      authenticatedAt: new Date().toISOString()
-    };
+    return null;
   });
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -284,10 +267,10 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [refreshAllData]);
 
   // Auth Actions
-  const login = async (method: AuthMethod, profile?: CitizenProfile) => {
+  const login = async (method: AuthMethod, payloadOrProfile?: any) => {
     try {
       if (isBackendConnected) {
-        const res = await apiClient.login(method, profile);
+        const res = await apiClient.login(method, payloadOrProfile);
         setCitizenProfile(res.user);
         const session: AuthSession = {
           jwtToken: res.jwtToken,
@@ -300,12 +283,28 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
         refreshAllData();
       } else {
         // Local Fallback
-        const targetProfile = profile || citizenProfile;
+        const username = payloadOrProfile?.username?.toLowerCase() || '';
+        let role: 'CITIZEN' | 'OFFICER' | 'ADMIN' = 'CITIZEN';
+        let userName = 'Aarav Sharma';
+
+        if (username.includes('officer')) {
+          role = 'OFFICER';
+          userName = 'Officer Rajesh Kumar (SDO)';
+          setActiveRole('OFFICER');
+        } else if (username.includes('admin')) {
+          role = 'ADMIN';
+          userName = 'National Gateway Authority';
+          setActiveRole('ADMIN');
+        } else {
+          setActiveRole('CITIZEN');
+        }
+
+        const targetProfile = payloadOrProfile?.fullName ? payloadOrProfile : citizenProfile;
         setCitizenProfile(targetProfile);
         const newClaims: JwtClaims = {
-          sub: targetProfile.id,
-          name: targetProfile.fullName,
-          role: 'CITIZEN',
+          sub: role === 'CITIZEN' ? targetProfile.id : `OFF-IN-2026-${Date.now()}`,
+          name: role === 'CITIZEN' ? targetProfile.fullName : userName,
+          role,
           aadhaarMasked: targetProfile.aadhaarNumber,
           email: targetProfile.email,
           phone: targetProfile.phone,
@@ -325,10 +324,16 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setIsAuthenticated(true);
       }
 
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
       addToast({
         type: 'success',
         title: 'Authenticated Successfully',
-        message: `Welcome back, ${citizenProfile.fullName}. Verified via OAuth 2.0 & JWT.`
+        message: `Welcome to GovSync! Verified via DPDP Consent & RFC-7519 JWT.`
       });
     } catch (err: any) {
       addToast({

@@ -2,7 +2,7 @@ export type UserRole = 'CITIZEN' | 'OFFICER' | 'ADMIN';
 
 export type LanguageCode = 'en' | 'hi' | 'mr';
 
-export type AuthMethod = 'AADHAAR_OTP' | 'DIGILOCKER_OAUTH' | 'PASSWORD_OTP';
+export type AuthMethod = 'AADHAAR_OTP' | 'DIGILOCKER_OAUTH' | 'PASSWORD_OTP' | 'PASSWORD' | 'CREDENTIALS';
 
 export interface JwtClaims {
   sub: string;

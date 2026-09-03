@@ -10,11 +10,23 @@ import { InteractiveFlowModal } from './components/InteractiveFlowModal';
 import { AuthModal } from './components/Auth/AuthModal';
 import { JudgeTourModal } from './components/SIH/JudgeTourModal';
 import { FloatingJudgeTrigger } from './components/SIH/FloatingJudgeTrigger';
+import { CitizenLoginPage } from './components/Auth/CitizenLoginPage';
 import { ShieldCheck } from 'lucide-react';
 
 const AppContent: React.FC = () => {
-  const { activeRole, t } = useGovSync();
+  const { isAuthenticated, activeRole, t } = useGovSync();
 
+  // If not logged in, render the official Citizen Login & Consent Gateway
+  if (!isAuthenticated) {
+    return (
+      <>
+        <CitizenLoginPage />
+        <ToastContainer />
+      </>
+    );
+  }
+
+  // Once authenticated with consent, render the main GovSync Ecosystem
   return (
     <div className="min-h-screen bg-[#F7F7F7] text-[#333333] flex flex-col selection:bg-[#FF9933] selection:text-[#003366]">
       {/* 1. SIH Prototype Evaluation Header Banner */}

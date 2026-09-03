@@ -5,25 +5,53 @@ import { AuthMethod, CitizenProfile } from '../types.js';
 
 export const authRouter = Router();
 
+// Presaved Demo Accounts Registry for SIH Presentation
+const DEMO_CREDENTIALS: Record<string, { role: 'CITIZEN' | 'OFFICER' | 'ADMIN'; name: string; password: string }> = {
+  'aarav.sharma': { role: 'CITIZEN', name: 'Aarav Sharma', password: 'GovSync@2026' },
+  'aarav@govsync.gov.in': { role: 'CITIZEN', name: 'Aarav Sharma', password: 'GovSync@2026' },
+  'CIT-IN-2026-98124': { role: 'CITIZEN', name: 'Aarav Sharma', password: 'GovSync@2026' },
+  'officer.rajesh': { role: 'OFFICER', name: 'Rajesh Kumar (SDO)', password: 'Officer@2026' },
+  'officer@govsync.gov.in': { role: 'OFFICER', name: 'Rajesh Kumar (SDO)', password: 'Officer@2026' },
+  'admin.nic': { role: 'ADMIN', name: 'National Gateway Authority', password: 'Admin@2026' },
+  'admin@govsync.gov.in': { role: 'ADMIN', name: 'National Gateway Authority', password: 'Admin@2026' }
+};
+
 // POST /api/auth/login
 authRouter.post('/login', (req: Request, res: Response) => {
-  const { authMethod = 'AADHAAR_OTP', aadhaarNumber, phone, password } = req.body;
+  const {
+    username,
+    password,
+    consentAccepted = true,
+    authMethod = 'CREDENTIALS'
+  } = req.body;
+
+  if (!consentAccepted) {
+    return res.status(400).json({
+      success: false,
+      error: 'CONSENT_REQUIRED',
+      message: 'Citizen consent is mandatory under DPDP Act 2023 before authentication.'
+    });
+  }
+
+  const normalizedUser = username ? String(username).toLowerCase().trim() : 'aarav.sharma';
+  const matched = DEMO_CREDENTIALS[normalizedUser] || DEMO_CREDENTIALS['aarav.sharma'];
+  const targetRole = matched.role;
 
   const currentProfile = db.getCitizenProfile();
-  const { token, claims } = signJwtToken(currentProfile, 'CITIZEN');
+  const { token, claims } = signJwtToken(currentProfile, targetRole);
 
   db.addAuditLog({
     id: `LOG-AUTH-${Date.now()}`,
     timestamp: new Date().toISOString(),
     actor: {
       id: currentProfile.id,
-      name: currentProfile.fullName,
-      role: 'CITIZEN'
+      name: matched.name,
+      role: targetRole
     },
     action: 'CITIZEN_LOGIN',
     affectedCitizenId: currentProfile.id,
     affectedCitizenName: currentProfile.fullName,
-    details: `Citizen authenticated successfully via ${authMethod} and issued RS256 JWT session token.`,
+    details: `User authenticated as ${targetRole} (${matched.name}) with DPDP 2023 Consent granted. Issued RS256 JWT token.`,
     ipAddress: req.ip || '103.21.244.18',
     integrityHash: generateSha256(`LOGIN_${currentProfile.id}_${Date.now()}`)
   });
@@ -33,6 +61,7 @@ authRouter.post('/login', (req: Request, res: Response) => {
     data: {
       jwtToken: token,
       claims,
+      role: targetRole,
       authMethod: authMethod as AuthMethod,
       authenticatedAt: new Date().toISOString(),
       user: currentProfile
@@ -76,6 +105,7 @@ authRouter.post('/register', (req: Request, res: Response) => {
     data: {
       jwtToken: token,
       claims,
+      role: 'CITIZEN',
       authMethod: 'AADHAAR_OTP' as AuthMethod,
       authenticatedAt: new Date().toISOString(),
       user: updatedProfile
