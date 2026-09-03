@@ -89,6 +89,9 @@ interface GovSyncContextType {
   setSelectedAppForDetail: (app: ServiceApplication | null) => void;
   isFlowVisualizerOpen: boolean;
   setIsFlowVisualizerOpen: (open: boolean) => void;
+  isJudgeTourOpen: boolean;
+  setIsJudgeTourOpen: (open: boolean) => void;
+  launchScenario: (scenarioId: 'CITIZEN_APPLY' | 'OFFICER_REVIEW' | 'ADAPTER_STUDIO' | 'PRIVACY_REVOKE') => void;
 
   // Toasts
   toasts: ToastMessage[];
@@ -166,7 +169,44 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [selectedServiceForApply, setSelectedServiceForApply] = useState<GovernmentService | null>(null);
   const [selectedAppForDetail, setSelectedAppForDetail] = useState<ServiceApplication | null>(null);
   const [isFlowVisualizerOpen, setIsFlowVisualizerOpen] = useState<boolean>(false);
+  const [isJudgeTourOpen, setIsJudgeTourOpen] = useState<boolean>(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const launchScenario = (scenarioId: 'CITIZEN_APPLY' | 'OFFICER_REVIEW' | 'ADAPTER_STUDIO' | 'PRIVACY_REVOKE') => {
+    setIsJudgeTourOpen(false);
+
+    if (scenarioId === 'CITIZEN_APPLY') {
+      setActiveRole('CITIZEN');
+      const pmKisan = services.find((s) => s.code === 'PM-KISAN') || services[0];
+      setSelectedServiceForApply(pmKisan);
+      addToast({
+        type: 'info',
+        title: '🎯 Scenario 1: Citizen 1-Click Enrollment',
+        message: 'Pre-filled 85% of verified credentials from Common Profile with Purpose-Bounded Consent authorization.'
+      });
+    } else if (scenarioId === 'OFFICER_REVIEW') {
+      setActiveRole('OFFICER');
+      addToast({
+        type: 'info',
+        title: '🎯 Scenario 2: Officer Decision & Sanction Desk',
+        message: 'Review verified citizen profiles, check cryptographic consent tokens, and issue sanction orders.'
+      });
+    } else if (scenarioId === 'ADAPTER_STUDIO') {
+      setActiveRole('ADMIN');
+      addToast({
+        type: 'info',
+        title: '🎯 Scenario 3: Legacy Adapter Normalization Studio',
+        message: 'Live testbed demonstrating translation of siloed Legacy SOAP/XML & Flat-Files into IFEG 2.0 Common JSON.'
+      });
+    } else if (scenarioId === 'PRIVACY_REVOKE') {
+      setActiveRole('CITIZEN');
+      addToast({
+        type: 'info',
+        title: '🎯 Scenario 4: DPDP Act 2023 Consent Center',
+        message: 'Demonstrate sovereign citizen data control with instant 1-click consent revocation and tamper-evident audit trail.'
+      });
+    }
+  };
 
   const addToast = (toast: Omit<ToastMessage, 'id'>) => {
     const id = `toast-${Date.now()}-${Math.random()}`;
@@ -645,6 +685,9 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSelectedAppForDetail,
         isFlowVisualizerOpen,
         setIsFlowVisualizerOpen,
+        isJudgeTourOpen,
+        setIsJudgeTourOpen,
+        launchScenario,
 
         toasts,
         addToast,
