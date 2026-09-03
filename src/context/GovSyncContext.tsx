@@ -106,17 +106,15 @@ export const GovSyncProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [language, setLanguage] = useState<LanguageCode>('en');
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
 
-  // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const saved = localStorage.getItem('govsync_is_authenticated');
-    return saved !== null ? JSON.parse(saved) : false;
-  });
+  // Authentication State - ALWAYS starts on Login Page on every open/refresh
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
 
-  const [authSession, setAuthSession] = useState<AuthSession | null>(() => {
-    const saved = localStorage.getItem('govsync_auth_session');
-    if (saved) return JSON.parse(saved);
-    return null;
-  });
+  useEffect(() => {
+    // Clear any past session cache so the app always opens fresh on the Login page
+    localStorage.removeItem('govsync_is_authenticated');
+    localStorage.removeItem('govsync_auth_session');
+  }, []);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [authModalMode, setAuthModalMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
