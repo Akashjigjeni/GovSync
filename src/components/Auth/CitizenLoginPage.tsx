@@ -102,8 +102,8 @@ export const CitizenLoginPage: React.FC = () => {
           </div>
 
           <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#FF9933] text-xs font-bold border border-white/15">
-            <Award className="w-3.5 h-3.5 text-[#FF9933]" />
-            <span>Smart India Hackathon 2026 Prototype</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-[#FF9933]" />
+            <span>National Interoperability Gateway</span>
           </div>
         </div>
       </header>
@@ -129,14 +129,14 @@ export const CitizenLoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Preset Demo Role Switcher for SIH Presentation */}
+          {/* Preset Demo Role Switcher */}
           <div className="p-6 bg-[#F7F7F7] border-b border-[#D9D9D9]">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-xs font-extrabold text-[#333333] uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#FF9933]" />
-                <span>1-Click Preset Demo Accounts (SIH Ready):</span>
+                <span>1-Click Verified Role Accounts:</span>
               </span>
-              <span className="text-[10px] font-mono text-[#666666]">Pre-saved in DB</span>
+              <span className="text-[10px] font-mono text-[#666666]">Pre-saved in Registry</span>
             </div>
 
             <div className="grid grid-cols-3 gap-2">
@@ -316,7 +316,7 @@ export const CitizenLoginPage: React.FC = () => {
 
       {/* Official Bottom Footer */}
       <footer className="bg-[#003366] text-slate-300 py-3 px-4 text-center text-[11px] border-t border-[#001830]">
-        <p>भारत सरकार | Smart India Hackathon Prototype • IFEG 2.0 & DPDP Act 2023 Compliant Gateway</p>
+        <p>भारत सरकार | Government of India • IFEG 2.0 & DPDP Act 2023 Compliant Gateway</p>
       </footer>
     </div>
   );

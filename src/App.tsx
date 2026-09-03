@@ -1,6 +1,5 @@
 import React from 'react';
 import { GovSyncProvider, useGovSync } from './context/GovSyncContext';
-import { SIHPrototypeBanner } from './components/SIH/SIHPrototypeBanner';
 import { Navbar } from './components/Navbar';
 import { CitizenDashboard } from './components/CitizenPortal/CitizenDashboard';
 import { OfficerDashboard } from './components/OfficerPortal/OfficerDashboard';
@@ -8,8 +7,6 @@ import { AdminDashboard } from './components/AdminPortal/AdminDashboard';
 import { ToastContainer } from './components/ToastContainer';
 import { InteractiveFlowModal } from './components/InteractiveFlowModal';
 import { AuthModal } from './components/Auth/AuthModal';
-import { JudgeTourModal } from './components/SIH/JudgeTourModal';
-import { FloatingJudgeTrigger } from './components/SIH/FloatingJudgeTrigger';
 import { CitizenLoginPage } from './components/Auth/CitizenLoginPage';
 import { ShieldCheck } from 'lucide-react';
 
@@ -29,24 +26,19 @@ const AppContent: React.FC = () => {
   // Once authenticated with consent, render the main GovSync Ecosystem
   return (
     <div className="min-h-screen bg-[#F7F7F7] text-[#333333] flex flex-col selection:bg-[#FF9933] selection:text-[#003366]">
-      {/* 1. SIH Prototype Evaluation Header Banner */}
-      <SIHPrototypeBanner />
-
-      {/* 2. Main Official Government Navbar */}
+      {/* 1. Main Official Government Navbar */}
       <Navbar />
 
-      {/* 3. Main Portal Workspace */}
+      {/* 2. Main Portal Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         {activeRole === 'CITIZEN' && <CitizenDashboard />}
         {activeRole === 'OFFICER' && <OfficerDashboard />}
         {activeRole === 'ADMIN' && <AdminDashboard />}
       </main>
 
-      {/* Interactive Global Modals & Evaluation Tools */}
+      {/* Interactive Global Modals */}
       <AuthModal />
-      <JudgeTourModal />
       <InteractiveFlowModal />
-      <FloatingJudgeTrigger />
       <ToastContainer />
 
       {/* Official Government of India Footer */}
@@ -82,7 +74,7 @@ const AppContent: React.FC = () => {
 
         {/* Bottom micro copyright bar */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] text-slate-400">
-          <p>© 2026 GovSync National Portal. Smart India Hackathon Functional Working Prototype.</p>
+          <p>© 2026 GovSync National Interoperability Portal. Government of India.</p>
           <div className="flex items-center gap-3">
             <span className="hover:text-white cursor-pointer">Terms of Service</span>
             <span>•</span>
