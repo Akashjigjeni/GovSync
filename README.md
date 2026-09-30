@@ -50,7 +50,8 @@ npm run dev
 ```
 
 ---
-hosting the project link :- https://akashjigjeni.github.io/GovSync/
+hosting the project link :-govsync-portal.netlify.app
+
 
 
 ## 📡 Core Backend Endpoints
