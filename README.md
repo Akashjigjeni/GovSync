@@ -50,7 +50,8 @@ npm run dev
 ```
 
 ---
-hosting the project link :- govsync-portal.netlify.app
+hosting the project link :- https://govsync-portal.netlify.app
+
 
 
 
