@@ -50,6 +50,8 @@ npm run dev
 ```
 
 ---
+hosting the project link :- https://akashjigjeni.github.io/GovSync/
+
 
 ## 📡 Core Backend Endpoints
 
